@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { loginModel,user } from '../models';
+import { loginModel } from '../models';
+import { User } from '../models/user'
 import { ApiEndpointSetting } from '../settings';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
@@ -19,19 +20,14 @@ export class LoginService {
 
     login = (loginModel: loginModel): Observable<any> => {
         let me = this;
-        console.log('inside login service');
-        console.dir(loginModel);
         let headers = new Headers();
         headers.append('Content-Type', 'application/json');
         let options = new RequestOptions({ headers: headers });
 
         let url = ApiEndpointSetting.AUTH_PATH + '/Authenticate';
-        console.log('the url is ',url);
         return this.http.post(url, loginModel, options)
             .switchMap(prop => {
-                console.log('inside switch');
-                console.dir(prop);
-                let userUrl = ApiEndpointSetting.API_PATH + '/api/Users'
+                let userUrl = ApiEndpointSetting.API_PATH + '/api/Users';
                 let user = this.extractData(prop);
                 let headers = new Headers();
                 headers.append('Content-Type', 'application/json');
@@ -40,7 +36,7 @@ export class LoginService {
 
                 return this.http.post(userUrl, user, this.requestionOptions)
                     .map(res => {
-                        let trainingUer: user = res.json().Data;
+                        let trainingUer: User = res.json().Data;
                         trainingUer.Token = prop.json().result;
                         // me.userHelper.setUser(trainingUer);
                         // me.ajaxAnimationHelper.finishLoading();
@@ -52,9 +48,9 @@ export class LoginService {
             .catch(this.handleError);
     }
 
-    private extractData = (res: Response) => {
+    private extractData = (res: Response):any => {
         let jsonObj = res.json();
-        var user = new user();
+        var user = new User();
         user.AuthUserId = jsonObj.id;
         user.TenantId = jsonObj.tenancyId;
         user.UserName = jsonObj.userName;
