@@ -7,4 +7,7 @@
     <TextField hint="Password" secure="true" [(ngModel)]="loginModel.password"></TextField>
 
     <Button text="Sign in" class="submit-button" (tap)="submit()"></Button>
+    <ActivityIndicator [busy]="isLoading" [visibility]="isLoading ? 'visible' : 'collapse'" row="1" horizontalAlignment="center"
+        verticalAlignment="center"></ActivityIndicator>
+
 </StackLayout>

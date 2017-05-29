@@ -1,31 +1,47 @@
-import { Component } from "@angular/core";
+import { Page } from 'tns-core-modules/ui/page';
+import { UserHelper } from './../../shared/helpers/user.helper';
+import { Component, OnInit } from "@angular/core";
 import { loginModel } from '../../shared/models/loginModel';
-import { LoginService } from '../../shared/services'
+import { LoginService } from '../../shared/services';
+import { GlobalState } from '../../global.state';
+import { APP_EVENTS } from '../../events';
+import { Router } from "@angular/router";
 @Component({
+    moduleId: module.id,
     selector: "my-login",
-    template: `
-    <ActionBar title="Training"></ActionBar>
-<!-- Your UI components go here -->
-<StackLayout>
-    <TextField hint="Tenancy Name" [(ngModel)]="loginModel.tenancyName" autocorrect="false" autocapitalizationType="none"></TextField>
-    <TextField hint="Email Address" keyboardType="email" [(ngModel)]="loginModel.usernameOrEmailAddress" autocorrect="false"
-        autocapitalizationType="none"></TextField>
-    <TextField hint="Password" secure="true" [(ngModel)]="loginModel.password"></TextField>
-
-    <Button text="Sign in" class="submit-button" (tap)="submit()"></Button>
-</StackLayout>
-    `,
+    templateUrl: './login.html',
     providers: [LoginService],
-    styleUrls:["pages/login/login-common.css", "pages/login/login.css"]
+    styleUrls: ["./login-common.css", "./login.css"]
 
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
     // Your TypeScript logic goes here
+    private isLoading = false;
+    ngOnInit() {
+        this.page.actionBarHidden = true;
+    }
     loginModel: loginModel;
-    constructor(private loginService: LoginService) {
+    constructor(
+        private loginService: LoginService
+        , private globalState: GlobalState
+        , private userHelper: UserHelper
+        , private router: Router
+        , private page: Page
+    ) {
         this.loginModel = new loginModel();
     }
     submit() {
-        this.loginService.login(this.loginModel).subscribe(user => console.dir(user));
+        this.isLoading = true;
+        this.loginService.login(this.loginModel).subscribe(
+            user => {
+                this.globalState.notifyDataChanged(APP_EVENTS.TENANT_CHANGED, user);
+                this.userHelper.updateUser(user);
+                console.dir(user);
+                this.isLoading = false;
+                this.router.navigate(["/my-modules-list"]);
+            }, error => {
+                this.isLoading = false;
+                alert('login failed');
+            });
     }
 }

@@ -48,32 +48,29 @@ export class LoginService {
             .catch(this.handleError);
     }
 
-    private extractData = (res: Response):any => {
+    private extractData = (res: Response): any => {
         let jsonObj = res.json();
-        var user = new User();
+        var user = <Training.User>{};
         user.AuthUserId = jsonObj.id;
         user.TenantId = jsonObj.tenancyId;
         user.UserName = jsonObj.userName;
         user.Roles = jsonObj.roles;
-        user.CompanyName=jsonObj.tenantName;
+        user.CompanyName = jsonObj.tenantName;
         return user;
     }
 
-     private handleError = (error: Response | any) => {
-         console.log('inside error');
+    private handleError = (error: Response | any) => {
+        console.log('inside error');
+        console.dir(error);
         let me = this;
-        // me.ajaxAnimationHelper.finishLoading();
         let errMsg: string;
         if (error instanceof Response) {
             const body = error.json() || '';
             const err = body.error || JSON.stringify(body);
             errMsg = `${error.status} - ${error.statusText || ''} ${err}`;
-            // me.messageHelper.error(err.details, err.title);
-            // this.messageHelper.showError(err.details, err.message);
         } else {
             errMsg = error.message ? error.message : error.toString();
         }
-        console.info(errMsg);
         return Observable.throw(errMsg);
     }
 }

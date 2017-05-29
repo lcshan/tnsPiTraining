@@ -1,0 +1,15 @@
+<ActionBar title="My Trainings"></ActionBar>
+<!-- Your UI components go here -->
+<GridLayout rows="*">
+    <ListView *ngIf="modules" [items]="modules" class="module-list-item" [class.visible]="listLoaded" (itemTap)="onModuleTapped($event)">
+        <!--<ng-template let-item="item">
+            <Label [text]="item.Title" (tap)="labelTap(item)"></Label>
+            
+        </ng-template>-->
+        <template let-item="item" let-i="index">
+            <module-list-item [module]="item"></module-list-item>
+        </template>
+    </ListView>
+    <ActivityIndicator [busy]="isLoading" [visibility]="isLoading ? 'visible' : 'collapse'" row="1" horizontalAlignment="center"
+        verticalAlignment="center"></ActivityIndicator>
+</GridLayout>
