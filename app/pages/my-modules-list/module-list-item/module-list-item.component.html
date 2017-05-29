@@ -1,8 +1,8 @@
-<StackLayout *ngIf="module">
+<StackLayout *ngIf="module" class="module-list-item">
 
     <Label [text]="module.Title" (tap)="expand=!expand"></Label>
     <GridView *ngIf="expand">
-        <Label [text]="'testing'" (tap)="expand=expand"></Label>
+        <HtmlView [html]="module.Description||''" (tap)="expand=expand"></HtmlView>
 
     </GridView>
 

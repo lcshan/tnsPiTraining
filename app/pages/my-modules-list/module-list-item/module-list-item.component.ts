@@ -3,7 +3,8 @@ import { Component, OnInit, Input } from '@angular/core';
 @Component({
     moduleId: module.id,
     selector: 'module-list-item',
-    templateUrl: './module-list-item.component.html'
+    templateUrl: './module-list-item.component.html',
+    styleUrls:["./module-list-item.css"]
 })
 export class ModuleListItemComponent implements OnInit {
     expand: boolean = false;
